@@ -6,7 +6,7 @@
 
 Name:		php-pecl-lzf
 Version:	1.5.2
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Extension to handle LZF de/compression
 Group:		Development/Languages
 License:	PHP
@@ -83,6 +83,9 @@ fi
 %{pecl_xmldir}/%{name}.xml
 
 %changelog
+* Sun Jul 12 2009 Remi Collet <Fedora@FamilleCollet.com> - 1.5.2-4
+- rebuild for new PHP 5.3.0 ABI (20090626)
+
 * Mon Jun 22 2009 Andrew Colin Kissa <andrew@topdog.za.net> - 1.5.2-3
 - Consistent use of macros
 
