@@ -6,12 +6,15 @@
 
 Name:		php-pecl-lzf
 Version:	1.5.2
-Release:	8%{?dist}
+Release:	9%{?dist}
 Summary:	Extension to handle LZF de/compression
 Group:		Development/Languages
 License:	PHP
 URL:		http://pecl.php.net/package/%{pecl_name}
 Source0:	http://pecl.php.net/get/%{pecl_name}-%{version}.tgz
+# http://svn.php.net/viewvc/pecl/lzf/trunk/lzf.c?r1=297236&r2=297235&pathrev=297236
+Patch0:         lzf-php54.patch
+
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	php-devel
@@ -21,6 +24,12 @@ Requires:       php(api) = %{php_core_api}
 Requires(post):	%{__pecl}
 Requires(postun):	%{__pecl}
 Provides:	php-pecl(%{pecl_name}) = %{version}
+
+# RPM 4.8
+%{?filter_provides_in: %filter_provides_in %{php_extdir}/.*\.so$}
+%{?filter_setup}
+# RPM 4.9
+%global __provides_exclude_from %{?__provides_exclude_from:%__provides_exclude_from|}%{php_extdir}/.*\\.so$
 
 
 %description
@@ -32,6 +41,9 @@ slight speed cost.
 
 %prep
 %setup -c -q
+
+%patch0 -p0 -b .php54
+
 [ -f package2.xml ] || %{__mv} package.xml package2.xml
 %{__mv} package2.xml %{pecl_name}-%{version}/%{pecl_name}.xml
 
@@ -56,6 +68,18 @@ EOF
 %{__install} -p -m 644 %{pecl_name}.xml %{buildroot}%{pecl_xmldir}/%{name}.xml
 
 
+%check
+cd %{pecl_name}-%{version}
+
+TEST_PHP_EXECUTABLE=%{_bindir}/php \
+REPORT_EXIT_STATUS=1 \
+NO_INTERACTION=1 \
+%{_bindir}/php run-tests.php \
+    -n -q \
+    -d extension_dir=%{buildroot}%{php_extdir} \
+    -d extension=lzf.so \
+
+
 %clean
 %{__rm} -rf %{buildroot}
 
@@ -76,6 +100,11 @@ fi
 %{pecl_xmldir}/%{name}.xml
 
 %changelog
+* Thu Jan 19 2012 Remi Collet <remi@fedoraproject.org> - 1.5.2-9
+- rebuild against PHP 5.4, with upstream patch
+- add filter to avoid private-shared-object-provides
+- add minimal %%check
+
 * Sat Jan 14 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.5.2-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 
