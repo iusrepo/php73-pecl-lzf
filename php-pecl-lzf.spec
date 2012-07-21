@@ -6,7 +6,7 @@
 
 Name:		php-pecl-lzf
 Version:	1.5.2
-Release:	9%{?dist}
+Release:	10%{?dist}
 Summary:	Extension to handle LZF de/compression
 Group:		Development/Languages
 License:	PHP
@@ -100,6 +100,9 @@ fi
 %{pecl_xmldir}/%{name}.xml
 
 %changelog
+* Sat Jul 21 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.5.2-10
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
 * Thu Jan 19 2012 Remi Collet <remi@fedoraproject.org> - 1.5.2-9
 - rebuild against PHP 5.4, with upstream patch
 - add filter to avoid private-shared-object-provides
