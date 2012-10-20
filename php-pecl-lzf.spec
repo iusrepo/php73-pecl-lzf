@@ -5,20 +5,21 @@
 %define pecl_name LZF
 
 Name:		php-pecl-lzf
-Version:	1.5.2
-Release:	10%{?dist}
+Version:	1.6.2
+Release:	1%{?dist}
 Summary:	Extension to handle LZF de/compression
 Group:		Development/Languages
 License:	PHP
 URL:		http://pecl.php.net/package/%{pecl_name}
 Source0:	http://pecl.php.net/get/%{pecl_name}-%{version}.tgz
-# http://svn.php.net/viewvc/pecl/lzf/trunk/lzf.c?r1=297236&r2=297235&pathrev=297236
-Patch0:         lzf-php54.patch
+# remove bundled lzf libs
+Patch0:         php-lzf-rm-bundled-libs.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	php-devel
 BuildRequires:  php-pear >= 1:1.4.0
+BuildRequires:	liblzf-devel
 Requires:       php(zend-abi) = %{php_zend_api}
 Requires:       php(api) = %{php_core_api}
 Requires(post):	%{__pecl}
@@ -41,8 +42,7 @@ slight speed cost.
 
 %prep
 %setup -c -q
-
-%patch0 -p0 -b .php54
+%patch0 -p0
 
 [ -f package2.xml ] || %{__mv} package.xml package2.xml
 %{__mv} package2.xml %{pecl_name}-%{version}/%{pecl_name}.xml
@@ -100,6 +100,10 @@ fi
 %{pecl_xmldir}/%{name}.xml
 
 %changelog
+* Sat Oct 20 2012 Andrew Colin Kissa - 1.6.2-1
+- Upgrade to latest upstream
+- Fix bugzilla #838309 #680230
+
 * Sat Jul 21 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.5.2-10
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
