@@ -6,22 +6,27 @@
 
 Name:		php-pecl-lzf
 Version:	1.6.2
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Extension to handle LZF de/compression
 Group:		Development/Languages
 License:	PHP
 URL:		http://pecl.php.net/package/%{pecl_name}
 Source0:	http://pecl.php.net/get/%{pecl_name}-%{version}.tgz
 # remove bundled lzf libs
-Patch0:         php-lzf-rm-bundled-libs.patch
+Patch0:		php-lzf-rm-bundled-libs.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	php-devel
-BuildRequires:  php-pear >= 1:1.4.0
+BuildRequires:	php-pear >= 1:1.4.0
 BuildRequires:	liblzf-devel
-Requires:       php(zend-abi) = %{php_zend_api}
-Requires:       php(api) = %{php_core_api}
+%if 0%{?php_zend_api:1}
+Requires:	php(zend-abi) = %{php_zend_api}
+Requires:	php(api) = %{php_core_api}
+%else
+# for EL-5
+Requires:	php-api = %{php_apiver}
+%endif
 Requires(post):	%{__pecl}
 Requires(postun):	%{__pecl}
 Provides:	php-pecl(%{pecl_name}) = %{version}
@@ -83,14 +88,18 @@ NO_INTERACTION=1 \
 %clean
 %{__rm} -rf %{buildroot}
 
+%if 0%{?pecl_install:1}
 %post
 %{pecl_install} %{pecl_xmldir}/%{name}.xml >/dev/null || :
+%endif
 
 
+%if 0%{?pecl_uninstall:1}
 %postun
-if [ $1 -eq 0 ]  ; then
-%{pecl_uninstall} %{pecl_name} >/dev/null || :
+if [ $1 -eq 0 ] ; then
+    %{pecl_uninstall} %{pecl_name} >/dev/null || :
 fi
+%endif
 
 %files
 %defattr(-,root,root,-)
@@ -100,6 +109,10 @@ fi
 %{pecl_xmldir}/%{name}.xml
 
 %changelog
+* Sun Oct 28 2012 Andrew Colin Kissa - 1.6.2-2
+- Fix php spec macros
+- Fix Zend API version checks
+
 * Sat Oct 20 2012 Andrew Colin Kissa - 1.6.2-1
 - Upgrade to latest upstream
 - Fix bugzilla #838309 #680230
