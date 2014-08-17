@@ -11,7 +11,7 @@
 
 Name:		php-pecl-lzf
 Version:	1.6.2
-Release:	7%{?dist}
+Release:	8%{?dist}
 Summary:	Extension to handle LZF de/compression
 Group:		Development/Languages
 License:	PHP
@@ -114,6 +114,9 @@ fi
 %{pecl_xmldir}/%{name}.xml
 
 %changelog
+* Sun Aug 17 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.6.2-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
 * Thu Jun 19 2014 Remi Collet <rcollet@redhat.com> - 1.6.2-7
 - rebuild for https://fedoraproject.org/wiki/Changes/Php56
 - add numerical prefix to extension configuration file
