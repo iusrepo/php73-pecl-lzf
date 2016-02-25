@@ -11,7 +11,7 @@
 
 Name:		php-pecl-lzf
 Version:	1.6.2
-Release:	10%{?dist}
+Release:	11%{?dist}
 Summary:	Extension to handle LZF de/compression
 Group:		Development/Languages
 License:	PHP
@@ -32,8 +32,10 @@ Requires:	php(api) = %{php_core_api}
 # for EL-5
 Requires:	php-api = %{php_apiver}
 %endif
+%if 0%{?fedora} < 24
 Requires(post):	%{__pecl}
 Requires(postun):	%{__pecl}
+%endif
 Provides:	php-pecl(%{pecl_name}) = %{version}
 
 # RPM 4.8
@@ -93,6 +95,7 @@ NO_INTERACTION=1 \
 %clean
 %{__rm} -rf %{buildroot}
 
+%if 0%{?fedora} < 24
 %if 0%{?pecl_install:1}
 %post
 %{pecl_install} %{pecl_xmldir}/%{name}.xml >/dev/null || :
@@ -105,6 +108,7 @@ if [ $1 -eq 0 ] ; then
     %{pecl_uninstall} %{pecl_name} >/dev/null || :
 fi
 %endif
+%endif
 
 %files
 %defattr(-,root,root,-)
@@ -114,6 +118,9 @@ fi
 %{pecl_xmldir}/%{name}.xml
 
 %changelog
+* Thu Feb 25 2016 Remi Collet <remi@fedoraproject.org> - 1.6.2-11
+- drop scriptlets (replaced by file triggers in php-pear) #1310546
+
 * Thu Feb 04 2016 Fedora Release Engineering <releng@fedoraproject.org> - 1.6.2-10
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
