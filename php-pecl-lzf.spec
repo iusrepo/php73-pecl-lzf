@@ -10,15 +10,13 @@
 %endif
 
 Name:		php-pecl-lzf
-Version:	1.6.2
-Release:	11%{?dist}
+Version:	1.6.5
+Release:	1%{?dist}
 Summary:	Extension to handle LZF de/compression
 Group:		Development/Languages
 License:	PHP
 URL:		http://pecl.php.net/package/%{pecl_name}
 Source0:	http://pecl.php.net/get/%{pecl_name}-%{version}.tgz
-# remove bundled lzf libs
-Patch0:		php-lzf-rm-bundled-libs.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -54,7 +52,8 @@ slight speed cost.
 
 %prep
 %setup -c -q
-%patch0 -p0
+sed -e '/name="lib/d' -i package.xml
+rm -r %{pecl_name}-%{version}/lib/
 
 [ -f package2.xml ] || %{__mv} package.xml package2.xml
 %{__mv} package2.xml %{pecl_name}-%{version}/%{pecl_name}.xml
@@ -62,7 +61,8 @@ slight speed cost.
 %build
 cd %{pecl_name}-%{version}
 phpize
-%configure
+%configure --enable-lzf --with-liblzf
+
 %{__make} %{?_smp_mflags}
 
 %install
@@ -118,6 +118,10 @@ fi
 %{pecl_xmldir}/%{name}.xml
 
 %changelog
+* Mon Jun 27 2016 Remi Collet <remi@fedoraproject.org> - 1.6.5-1
+- update to 1.6.5
+- rebuild for https://fedoraproject.org/wiki/Changes/php70
+
 * Thu Feb 25 2016 Remi Collet <remi@fedoraproject.org> - 1.6.2-11
 - drop scriptlets (replaced by file triggers in php-pear) #1310546
 
