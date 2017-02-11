@@ -11,7 +11,7 @@
 
 Name:		php-pecl-lzf
 Version:	1.6.5
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Extension to handle LZF de/compression
 Group:		Development/Languages
 License:	PHP
@@ -118,6 +118,9 @@ fi
 %{pecl_xmldir}/%{name}.xml
 
 %changelog
+* Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.6.5-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
 * Mon Nov 14 2016 Remi Collet <remi@fedoraproject.org> - 1.6.5-2
 - rebuild for https://fedoraproject.org/wiki/Changes/php71
 
