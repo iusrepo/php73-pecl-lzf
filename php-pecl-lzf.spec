@@ -1,3 +1,6 @@
+%global pecl_name LZF
+%global ini_name  40-lzf.ini
+
 Name:		php-pecl-lzf
 Version:	1.6.5
 Release:	7%{?dist}
