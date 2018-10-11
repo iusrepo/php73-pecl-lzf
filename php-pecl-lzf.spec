@@ -2,8 +2,8 @@
 %global ini_name  40-lzf.ini
 
 Name:		php-pecl-lzf
-Version:	1.6.5
-Release:	9%{?dist}
+Version:	1.6.6
+Release:	1%{?dist}
 Summary:	Extension to handle LZF de/compression
 Group:		Development/Languages
 License:	PHP
@@ -74,6 +74,10 @@ NO_INTERACTION=1 \
 %{pecl_xmldir}/%{name}.xml
 
 %changelog
+* Thu Oct 11 2018 Remi Collet <remi@remirepo.net> - 1.6.6-1
+- Rebuild for https://fedoraproject.org/wiki/Changes/php73
+- update to 1.6.6
+
 * Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.6.5-9
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
 
