@@ -1,77 +1,71 @@
 %global pecl_name LZF
 %global ini_name  40-lzf.ini
 
-Name:		php-pecl-lzf
-Version:	1.6.6
-Release:	1%{?dist}
-Summary:	Extension to handle LZF de/compression
-Group:		Development/Languages
-License:	PHP
-URL:		http://pecl.php.net/package/%{pecl_name}
-Source0:	http://pecl.php.net/get/%{pecl_name}-%{version}.tgz
+Name:           php-pecl-lzf
+Version:        1.6.6
+Release:        1%{?dist}
+Summary:        Extension to handle LZF de/compression
+License:        PHP
+URL:            https://pecl.php.net/package/%{pecl_name}
+Source0:        https://pecl.php.net/get/%{pecl_name}-%{version}.tgz
 
-BuildRequires:	php-devel
-BuildRequires:	php-pear >= 1:1.4.0
-BuildRequires:	liblzf-devel
-Requires:	php(zend-abi) = %{php_zend_api}
-Requires:	php(api) = %{php_core_api}
+BuildRequires:  php-devel
+BuildRequires:  php-pear >= 1:1.4.0
+BuildRequires:  liblzf-devel
+Requires:       php(zend-abi) = %{php_zend_api}
+Requires:       php(api) = %{php_core_api}
 
-Provides:	php-pecl(%{pecl_name}) = %{version}
+Provides:       php-pecl(%{pecl_name}) = %{version}
 
 
 %description
 This extension provides LZF compression and decompression using the liblzf
-library
+library.  LZF is a very fast compression algorithm, ideal for saving space with
+a slight speed cost.
 
-LZF is a very fast compression algorithm, ideal for saving space with a 
-slight speed cost.
 
 %prep
 %setup -c -q
 sed -e '/name="lib/d' -i package.xml
 rm -r %{pecl_name}-%{version}/lib/
 
-[ -f package2.xml ] || %{__mv} package.xml package2.xml
-%{__mv} package2.xml %{pecl_name}-%{version}/%{pecl_name}.xml
+cat > %{ini_name} << EOF
+; Enable %{pecl_name} extension module
+extension=lzf.so
+EOF
+
 
 %build
 cd %{pecl_name}-%{version}
 phpize
 %configure --enable-lzf --with-liblzf
+%make_build
 
-%{__make} %{?_smp_mflags}
 
 %install
 cd %{pecl_name}-%{version}
-%{__make} install INSTALL_ROOT=%{buildroot} INSTALL="install -p"
+make install INSTALL_ROOT=%{buildroot}
+install -D -p -m 644 %{ini_name} %{buildroot}%{php_inidir}/%{ini_name}
 
-%{__mkdir_p} %{buildroot}%{_sysconfdir}/php.d
-%{__cat} > %{buildroot}%{_sysconfdir}/php.d/%{ini_name} << 'EOF'
-; Enable %{pecl_name} extension module
-extension=lzf.so
-EOF
-
-%{__mkdir_p} %{buildroot}%{pecl_xmldir}
-%{__install} -p -m 644 %{pecl_name}.xml %{buildroot}%{pecl_xmldir}/%{name}.xml
+install -D -p -m 644 package.xml %{buildroot}%{pecl_xmldir}/%{name}.xml
 
 
 %check
 cd %{pecl_name}-%{version}
-
-TEST_PHP_EXECUTABLE=%{_bindir}/php \
+TEST_PHP_EXECUTABLE=%{__php} \
 REPORT_EXIT_STATUS=1 \
 NO_INTERACTION=1 \
-%{_bindir}/php run-tests.php \
+%{__php} run-tests.php \
     -n -q \
-    -d extension_dir=%{buildroot}%{php_extdir} \
-    -d extension=lzf.so \
+    -d extension=%{buildroot}%{php_extdir}/lzf.so
 
 
 %files
 %doc %{pecl_name}-%{version}/CREDITS
-%config(noreplace) %{_sysconfdir}/php.d/%{ini_name}
+%config(noreplace) %{php_inidir}/%{ini_name}
 %{php_extdir}/lzf.so
 %{pecl_xmldir}/%{name}.xml
+
 
 %changelog
 * Thu Oct 11 2018 Remi Collet <remi@remirepo.net> - 1.6.6-1
