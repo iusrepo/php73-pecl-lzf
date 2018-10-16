@@ -46,14 +46,13 @@ phpize
 
 
 %install
-cd %{pecl_name}-%{version}
-make install INSTALL_ROOT=%{buildroot}
+make -C %{pecl_name}-%{version} install INSTALL_ROOT=%{buildroot}
 install -D -p -m 644 %{ini_name} %{buildroot}%{php_inidir}/%{ini_name}
 
 install -D -p -m 644 package.xml %{buildroot}%{pecl_xmldir}/%{name}.xml
 
-for i in $(grep 'role="doc"' ../package.xml | sed -e 's/^.*name="//;s/".*$//')
-do install -D -p -m 644 $i %{buildroot}%{pecl_docdir}/%{pecl_name}/$i
+for i in $(grep 'role="doc"' package.xml | sed -e 's/^.*name="//;s/".*$//')
+do install -D -p -m 644 %{pecl_name}-%{version}/$i %{buildroot}%{pecl_docdir}/%{pecl_name}/$i
 done
 
 
