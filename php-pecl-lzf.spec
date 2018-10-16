@@ -30,6 +30,8 @@ a slight speed cost.
 sed -e '/name="lib/d' -i package.xml
 rm -r %{pecl_name}-%{version}/lib/
 
+sed -e '/LICENSE/s/role="doc"/role="src"/' -i package.xml
+
 cat > %{ini_name} << EOF
 ; Enable %{pecl_name} extension module
 extension=lzf.so
@@ -50,6 +52,10 @@ install -D -p -m 644 %{ini_name} %{buildroot}%{php_inidir}/%{ini_name}
 
 install -D -p -m 644 package.xml %{buildroot}%{pecl_xmldir}/%{name}.xml
 
+for i in $(grep 'role="doc"' ../package.xml | sed -e 's/^.*name="//;s/".*$//')
+do install -D -p -m 644 $i %{buildroot}%{pecl_docdir}/%{pecl_name}/$i
+done
+
 
 %check
 cd %{pecl_name}-%{version}
@@ -62,7 +68,8 @@ NO_INTERACTION=1 \
 
 
 %files
-%doc %{pecl_name}-%{version}/CREDITS
+%license %{pecl_name}-%{version}/LICENSE
+%doc %{pecl_docdir}/%{pecl_name}
 %config(noreplace) %{php_inidir}/%{ini_name}
 %{php_extdir}/lzf.so
 %{pecl_xmldir}/%{name}.xml
@@ -71,6 +78,7 @@ NO_INTERACTION=1 \
 %changelog
 * Tue Oct 16 2018 Carl George <carl@george.computer> - 1.6.6-2
 - Provide arch-specific pecl name
+- Fix license and documentation handling
 
 * Thu Oct 11 2018 Remi Collet <remi@remirepo.net> - 1.6.6-1
 - Rebuild for https://fedoraproject.org/wiki/Changes/php73
